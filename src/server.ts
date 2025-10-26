@@ -16,6 +16,13 @@ import swaggerSpecs from './config/swagger';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log(`Starting server...`);
+console.log(`PORT:${PORT}`); // 👈 السطر اللي يخلي Render يكتشف البورت فورًا
+
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Listening on port ${PORT}`);
+  console.log('🚀
+
 // 👇 Force environment to production for Render (مهم جدًا)
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
