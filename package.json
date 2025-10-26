@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
-"start": "node dist/server.js"
+    "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "seed": "npx ts-node src/seeds/index.ts",
     "seed:clear": "npx ts-node src/seeds/index.ts --clear",
