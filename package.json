@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node --max-old-space-size=1024 dist/server.js || node --max-old-space-size=1024 build/server.js || npx ts-node --transpile-only src/server.ts",
+"start": "node dist/server.js"
     "dev": "nodemon src/server.ts",
     "seed": "npx ts-node src/seeds/index.ts",
     "seed:clear": "npx ts-node src/seeds/index.ts --clear",
