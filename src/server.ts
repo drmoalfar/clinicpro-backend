@@ -189,14 +189,16 @@ async function initializeServer() {
     );
 
     // ✅ Start server
-    const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log('🚀 ClinicPro Backend Server Started');
-      console.log('===================================');
-      console.log(`🌐 Server running on port ${PORT}`);
-      console.log(`🏥 Health Check: /api/health`);
-      console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log('===================================');
-    });
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('🚀 ClinicPro Backend Server Started');
+  console.log('===================================');
+  console.log(`🌐 Server running on port ${PORT}`);
+  console.log(`🏥 Health Check: /api/health`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Listening on http://0.0.0.0:${PORT}`); // 👈 ده السطر المهم
+  console.log('===================================');
+});
+
 
     // Handle server errors
     server.on('error', (error: any) => {
