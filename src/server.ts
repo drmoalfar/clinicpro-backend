@@ -12,8 +12,12 @@ import routes from './routes';
 import publicRoutes from './routes/publicRoutes';
 import swaggerSpecs from './config/swagger';
 
+// ✅ Initialize app
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// 👇 Force environment to production for Render (مهم جدًا)
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 // ✅ Initialize server function
 async function initializeServer() {
@@ -46,7 +50,7 @@ async function initializeServer() {
     app.use(cors(corsOptions));
     app.options('*', cors(corsOptions));
 
-    // CORS debug (for development)
+    // Debug CORS for development
     app.use((req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
         res.header('Access-Control-Allow-Credentials', 'true');
@@ -70,7 +74,7 @@ async function initializeServer() {
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-    // Swagger Documentation
+    // Swagger Documentation (disabled in production)
     if (process.env.NODE_ENV !== 'production') {
       app.use(
         '/api/docs',
@@ -83,10 +87,7 @@ async function initializeServer() {
             docExpansion: 'none',
             filter: true,
             showRequestDuration: true,
-            syntaxHighlight: {
-              activate: true,
-              theme: 'agate'
-            }
+            syntaxHighlight: { activate: true, theme: 'agate' }
           }
         })
       );
@@ -187,7 +188,7 @@ async function initializeServer() {
       }
     );
 
-    // ✅ Start server (only once)
+    // ✅ Start server
     const server = app.listen(PORT, '0.0.0.0', () => {
       console.log('🚀 ClinicPro Backend Server Started');
       console.log('===================================');
@@ -216,9 +217,13 @@ async function initializeServer() {
 }
 
 // ✅ Start the server
-initializeServer().catch((error) => {
-  console.error('💥 Fatal error during server initialization:', error);
-  process.exit(1);
-});
+initializeServer()
+  .then(() => {
+    console.log('✅ Initialization complete.');
+  })
+  .catch((error) => {
+    console.error('💥 Fatal error during server initialization:', error);
+    process.exit(1);
+  });
 
 export default app;
