@@ -1,4 +1,4 @@
-// ✅ Load environment variables FIRST - before any other imports that might use them
+// ✅ Load environment variables FIRST
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,23 +16,26 @@ import swaggerSpecs from './config/swagger';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-console.log(`Starting server...`);
-console.log(`PORT:${PORT}`); // 👈 السطر اللي يخلي Render يكتشف البورت فورًا
-
-const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Listening on port ${PORT}`);
-  console.log('🚀
-
 // 👇 Force environment to production for Render (مهم جدًا)
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
-// ✅ Initialize server function
+console.log('🚀 Starting ClinicPro Backend...');
+console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+console.log(`📡 PORT: ${PORT}`);
+
+// ✅ Start listening immediately so Render detects the open port
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server listening on port ${PORT}`);
+  console.log(`🏥 Health check: http://0.0.0.0:${PORT}/api/health`);
+});
+
+// ✅ Initialize server logic
 async function initializeServer() {
   try {
     // Connect to MongoDB
-    console.log('🔌 Initializing database connection...');
+    console.log('🔌 Connecting to MongoDB...');
     await connectDB();
-    console.log('✅ Database connection established');
+    console.log('✅ Database connected successfully');
 
     // Security middleware
     app.use(helmet());
@@ -56,15 +59,6 @@ async function initializeServer() {
     };
     app.use(cors(corsOptions));
     app.options('*', cors(corsOptions));
-
-    // Debug CORS for development
-    app.use((req, res, next) => {
-      if (process.env.NODE_ENV === 'development') {
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Max-Age', '3600');
-      }
-      next();
-    });
 
     // Rate limiting
     const limiter = rateLimit({
@@ -110,7 +104,7 @@ async function initializeServer() {
     app.get('/api/health', (req, res) => {
       res.json({
         success: true,
-        message: 'Clinic Management System API is running',
+        message: 'Clinic Management System API is running 🚀',
         version: '1.0.0',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development'
@@ -180,7 +174,10 @@ async function initializeServer() {
           return;
         }
 
-        if (err.name === 'MongoNetworkError' || err.name === 'MongoTimeoutError') {
+        if (
+          err.name === 'MongoNetworkError' ||
+          err.name === 'MongoTimeoutError'
+        ) {
           res.status(503).json({
             success: false,
             message: 'Database connection error'
@@ -195,46 +192,15 @@ async function initializeServer() {
       }
     );
 
-    // ✅ Start server
-  const server = app.listen(PORT, '0.0.0.0', () => {
-	  console.log(`PORT:${PORT}`); // 👈 Render بيحتاج يشوف ده علشان يتأكد إن السيرفر شغال
-
-  console.log('🚀 ClinicPro Backend Server Started');
-  console.log('===================================');
-  console.log(`🌐 Server running on port ${PORT}`);
-  console.log(`🏥 Health Check: /api/health`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`✅ Listening on http://0.0.0.0:${PORT}`); // 👈 ده السطر المهم
-  console.log('===================================');
-});
-
-
-    // Handle server errors
-    server.on('error', (error: any) => {
-      if (error.code === 'EADDRINUSE') {
-        console.error(`❌ Port ${PORT} is already in use`);
-        process.exit(1);
-      } else {
-        console.error('❌ Server error:', error);
-        process.exit(1);
-      }
-    });
-
-    return server;
+    console.log('✅ Initialization complete.');
   } catch (error) {
     console.error('💥 Failed to initialize server:', error);
-    process.exit(1);
   }
 }
 
-// ✅ Start the server
-initializeServer()
-  .then(() => {
-    console.log('✅ Initialization complete.');
-  })
-  .catch((error) => {
-    console.error('💥 Fatal error during server initialization:', error);
-    process.exit(1);
-  });
+// ✅ Start initialization
+initializeServer().catch((error) => {
+  console.error('💥 Fatal error during startup:', error);
+});
 
 export default app;
