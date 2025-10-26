@@ -189,7 +189,9 @@ async function initializeServer() {
     );
 
     // ✅ Start server
-const server = app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
+	  console.log(`PORT:${PORT}`); // 👈 Render بيحتاج يشوف ده علشان يتأكد إن السيرفر شغال
+
   console.log('🚀 ClinicPro Backend Server Started');
   console.log('===================================');
   console.log(`🌐 Server running on port ${PORT}`);
